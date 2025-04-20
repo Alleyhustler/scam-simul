@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rug Pull Simulator</title>
+    <style>
+        :root {
+            --bg-color: #0f1215;
+            --text-color: #e2e8f0;
+            --accent-color: #10b981;
+            --secondary-color: #8b5cf6;
+            --danger-color: #ef4444;
+            --success-color: #22c55e;
+            --panel-color: #1e293b;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #2d3748;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            margin-right: 10px;
+            image-rendering: pixelated;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+        }
+        
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .game-panel {
+            background-color: var(--panel-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid #2d3748;
+            border-radius: 4px;
+            background-color: #111827;
+        }
+        
+        canvas {
+            image-rendering: pixelated;
+        }
+        
+        .controls {
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-right: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #fff;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .stats-container {
+            background-color: var(--panel-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .stat-box {
+            background-color: #111827;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+        
+        .highlight {
+            color: var(--accent-color);
+        }
+        
+        .highlight-purple {
+            color: var(--secondary-color);
+        }
+        
+        .highlight-danger {
+            color: var(--danger-color);
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #111827;
+            border-radius: 4px;
+            height: 20px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .coin-info {
+            margin-top: 1rem;
+            padding: 15px;
+            background-color: #111827;
+            border-radius: 4px;
+        }
+        
+        .coin-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .coin-detail {
+            font-size: 0.9rem;
+        }
+        
+        .coin-detail span {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .leaderboard {
+            margin-top: 2rem;
+        }
+        
+        .leaderboard h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--panel-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #2d3748;
+        }
+        
+        th {
+            background-color: #111827;
+            color: var(--accent-color);
+        }
+        
+        tr:nth-child(even) {
+            background-color: #1a202c;
+        }
+        
+        .rank {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .rank-1 {
+            color: gold;
+        }
+        
+        .rank-2 {
+            color: silver;
+        }
+        
+        .rank-3 {
+            color: #cd7f32;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+            font-weight: bold;
+        }
+        
+        .game-over {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-over-content {
+            max-width: 600px;
+            background-color: var(--panel-color);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .game-over h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--danger-color);
+        }
+        
+        .game-over p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .game-over-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .game-over-stat {
+            background-color: #111827;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .pixel-art {
+            image-rendering: pixelated;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 15px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        .event-log {
+            height: 200px;
+            overflow-y: auto;
+            background-color: #111827;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 2px;
+        }
+        
+        .log-info {
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .log-warning {
+            border-left: 3px solid orange;
+        }
+        
+        .log-danger {
+            border-left: 3px solid var(--danger-color);
+        }
+        
+        .log-success {
+            border-left: 3px solid var(--success-color);
+        }
+        
+        .log-time {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
+        .pixel-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--accent-color);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.1s;
+            box-shadow: 0 5px 0 #0e9f6e;
+            border-radius: 4px;
+        }
+        
+        .pixel-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #0e9f6e;
+        }
+        
+        .pixel-button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #0e9f6e;
+        }
+        
+        .pixel-button.danger {
+            background-color: var(--danger-color);
+            box-shadow: 0 5px 0 #b91c1c;
+        }
+        
+        .pixel-button.danger:hover {
+            box-shadow: 0 7px 0 #b91c1c;
+        }
+        
+        .pixel-button.danger:active {
+            box-shadow: 0 2px 0 #b91c1c;
+        }
+        
+        .pixel-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            nav ul li {
+                margin-left: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+            }
+            
+            nav ul li {
+                margin-left: 0;
+                margin-right: 1rem;
+            }
+        }
+        .social-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .social-icon.twitter {
+            background-color: #1DA1F2;
+        }
+        
+        .social-icon.telegram {
+            background-color: #0088CC;
+        }
+        
+        .buy-button {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .buy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .ca-info {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            padding: 5px 10px;
+            background-color: var(--panel-color);
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        @media (max-width: 768px) {
+            .social-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <div class="pixel-art" id="gameOverImage"></div>
+            <h2>RUG PULLED!</h2>
+            <p>You've successfully rugged the project and escaped with the funds!</p>
+            <div class="game-over-stats">
+                <div class="game-over-stat">
+                    <div class="stat-label">Total Stolen</div>
+                    <div class="stat-value highlight-danger" id="totalStolen">0 SOL</div>
+                </div>
+                <div class="game-over-stat">
+                    <div class="stat-label">Project Lifetime</div>
+                    <div class="stat-value" id="projectLifetime">0 days</div>
+                </div>
+                <div class="game-over-stat">
+                    <div class="stat-label">Peak Market Cap</div>
+                    <div class="stat-value highlight-purple" id="peakMarketCap">0 SOL</div>
+                </div>
+                <div class="game-over-stat">
+                    <div class="stat-label">Investors Rugged</div>
+                    <div class="stat-value" id="investorsRugged">0</div>
+                </div>
+            </div>
+            <button class="pixel-button" id="playAgainBtn">START NEW SCAM</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="f777f8073dd006f56ff5011039d38bdb__1_-removebg-preview-removebg-preview.png" alt="Scam Simulator Logo" width="64" height="64">
+                SCAM SIMULATOR
+            </div>
+            <div class="social-links">
+                <a href="https://x.com/ScamExperiment_" target="_blank" class="social-icon twitter">Twitter</a>
+                <a href="https://t.me/scamexperiment" target="_blank" class="social-icon telegram">Telegram</a>
+                <a href="https://pump.fun/profile/NsAYEJZxzesvawzabvFa57wmjChXqXW3Pix7CKd2s6z" target="_blank" class="buy-button">BUY $SCAM</a>
+                <div class="ca-info">CA: HERE</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="highlight">Play</a></li>
+                    <li><a href="#leaderboard">Leaderboard</a></li>
+                    <li><a href="#" id="howToPlayBtn">How to Play</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <div class="game-container">
+            <div class="game-panel">
+                <h2>Coin Chart</h2>
+                <div class="chart-container">
+                    <canvas id="chartCanvas"></canvas>
+                    <div class="tooltip" id="chartTooltip"></div>
+                </div>
+                <div class="coin-info">
+                    <h3 id="coinName">Deploy a new memecoin to start!</h3>
+                    <div class="coin-info-grid">
+                        <div class="coin-detail">Symbol: <span id="coinSymbol">-</span></div>
+                        <div class="coin-detail">Price: <span id="coinPrice">$0.0000</span></div>
+                        <div class="coin-detail">Market Cap: <span id="marketCap">$0</span></div>
+                        <div class="coin-detail">Liquidity: <span id="liquidity">0 SOL</span></div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="pixel-button" id="deployBtn">DEPLOY COIN</button>
+                    <button class="pixel-button danger" id="rugBtn" disabled>RUG PULL</button>
+                </div>
+                <div class="event-log" id="eventLog"></div>
+            </div>
+            
+            <div class="stats-container">
+                <h2>Dev Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Wallet Balance</div>
+                        <div class="stat-value highlight" id="walletBalance">10 SOL</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Developer Tokens</div>
+                        <div class="stat-value highlight-purple" id="devTokens">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Rugs</div>
+                        <div class="stat-value highlight-danger" id="totalRugs">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Projects Deployed</div>
+                        <div class="stat-value" id="projectsDeployed">0</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Project Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Project Age</div>
+                        <div class="stat-value" id="projectAge">0 days</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Holders</div>
+                        <div class="stat-value" id="holders">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Transactions</div>
+                        <div class="stat-value" id="transactions">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Potential Rug</div>
+                        <div class="stat-value highlight-danger" id="potentialRug">0 SOL</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Social Engagement</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="socialProgressBar"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span>0%</span>
+                    <span id="socialPercentage">0%</span>
+                    <span>100%</span>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Suspicion Level</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="suspicionProgressBar" style="background-color: var(--danger-color);"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span>Safe</span>
+                    <span id="suspicionPercentage">0%</span>
+                    <span>Detected</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="leaderboard" id="leaderboard">
+            <h2>Top Ruggers Leaderboard</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Dev Name</th>
+                        <th>Coin Name</th>
+                        <th>Total Stolen</th>
+                        <th>Project Lifetime</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Leaderboard data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            wallet: 10,
+            deploymentCost: 4,
+            totalRugs: 0,
+            projectsDeployed: 0,
+            currentProject: null,
+            gameActive: false,
+            chartData: [],
+            marketCap: 0,
+            price: 0,
+            liquidity: 0,
+            holders: 0,
+            transactions: 0,
+            projectAge: 0,
+            devTokenPercent: 0,
+            socialEngagement: 0,
+            suspicionLevel: 0,
+            devTokens: 0,
+            animationId: null,
+            days: 0,
+            peakMarketCap: 0,
+            simulationSpeed: 1,
+            gameTickInterval: null,
+            chartInterval: null,
+            leaderboard: []
+        };
+
+        // DOM Elements
+        const chartCanvas = document.getElementById('chartCanvas');
+        const chartCtx = chartCanvas.getContext('2d');
+        const deployBtn = document.getElementById('deployBtn');
+        const rugBtn = document.getElementById('rugBtn');
+        const walletBalanceEl = document.getElementById('walletBalance');
+        const devTokensEl = document.getElementById('devTokens');
+        const totalRugsEl = document.getElementById('totalRugs');
+        const projectsDeployedEl = document.getElementById('projectsDeployed');
+        const projectAgeEl = document.getElementById('projectAge');
+        const holdersEl = document.getElementById('holders');
+        const transactionsEl = document.getElementById('transactions');
+        const potentialRugEl = document.getElementById('potentialRug');
+        const socialProgressBarEl = document.getElementById('socialProgressBar');
+        const socialPercentageEl = document.getElementById('socialPercentage');
+        const suspicionProgressBarEl = document.getElementById('suspicionProgressBar');
+        const suspicionPercentageEl = document.getElementById('suspicionPercentage');
+        const coinNameEl = document.getElementById('coinName');
+        const coinSymbolEl = document.getElementById('coinSymbol');
+        const coinPriceEl = document.getElementById('coinPrice');
+        const marketCapEl = document.getElementById('marketCap');
+        const liquidityEl = document.getElementById('liquidity');
+        const notificationEl = document.getElementById('notification');
+        const gameOverEl = document.getElementById('gameOver');
+        const totalStolenEl = document.getElementById('totalStolen');
+        const projectLifetimeEl = document.getElementById('projectLifetime');
+        const peakMarketCapEl = document.getElementById('peakMarketCap');
+        const investorsRuggedEl = document.getElementById('investorsRugged');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const eventLogEl = document.getElementById('eventLog');
+        const leaderboardBody = document.getElementById('leaderboardBody');
+        const chartTooltip = document.getElementById('chartTooltip');
+        const howToPlayBtn = document.getElementById('howToPlayBtn');
+        const gameOverImage = document.getElementById('gameOverImage');
+
+        // Initialize canvas sizes
+        function initCanvases() {
+            // Chart canvas
+            chartCanvas.width = chartCanvas.parentElement.clientWidth;
+            chartCanvas.height = chartCanvas.parentElement.clientHeight;
+            
+            // Game over image
+            const gameOverCanvas = document.createElement('canvas');
+            gameOverCanvas.width = 64;
+            gameOverCanvas.height = 64;
+            const gameOverCtx = gameOverCanvas.getContext('2d');
+            drawGameOverImage(gameOverCtx);
+            gameOverImage.src = gameOverCanvas.toDataURL();
+        }
+
+        // Draw pixel art logo
+        function drawLogo(ctx) {
+            if (!ctx) return;
+            
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, 32, 32);
+            
+            // Draw money bag
+            ctx.fillStyle = '#eab308';
+            ctx.fillRect(8, 8, 16, 16);
+            ctx.fillStyle = '#ca8a04';
+            ctx.fillRect(10, 10, 12, 12);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(14, 12, 4, 6);
+            
+            // Draw $ symbol
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(16, 10, 2, 10);
+            ctx.fillRect(14, 10, 6, 2);
+            ctx.fillRect(14, 14, 6, 2);
+            ctx.fillRect(14, 18, 6, 2);
+            
+            // Draw arrow for "pull"
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(22, 14, 6, 2);
+            ctx.fillRect(24, 16, 2, 6);
+            ctx.fillRect(22, 20, 6, 2);
+            ctx.fillRect(20, 18, 2, 2);
+            ctx.fillRect(26, 18, 2, 2);
+        }
+
+        // Draw game over image
+        function drawGameOverImage(ctx) {
+            if (!ctx) return;
+            
+            // Background
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, 64, 64);
+            
+            // Draw money bag
+            ctx.fillStyle = '#eab308';
+            ctx.fillRect(16, 16, 32, 32);
+            ctx.fillStyle = '#ca8a04';
+            ctx.fillRect(20, 20, 24, 24);
+            
+            // Draw dollar signs
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(24, 24, 4, 4);
+            ctx.fillRect(36, 24, 4, 4);
+            ctx.fillRect(24, 32, 4, 4);
+            ctx.fillRect(36, 32, 4, 4);
+            
+            // Draw running dev
+            ctx.fillStyle = '#8b5cf6';
+            ctx.fillRect(44, 44, 8, 8);
+            ctx.fillStyle = '#6366f1';
+            ctx.fillRect(46, 46, 4, 4);
+            ctx.fillRect(40, 48, 4, 8);
+            ctx.fillRect(48, 48, 4, 8);
+        }
+
+        // Initialize game
+        function initGame() {
+            initCanvases();
+            updateUI();
+            loadLeaderboard();
+            setButtonListeners();
+            
+            window.addEventListener('resize', () => {
+                chartCanvas.width = chartCanvas.parentElement.clientWidth;
+                chartCanvas.height = chartCanvas.parentElement.clientHeight;
+                drawChart();
+            });
+            
+            // Initial chart draw
+            drawChart();
+        }
+
+        // Set button event listeners
+        function setButtonListeners() {
+            // Remove existing listeners to prevent duplicates
+            deployBtn.removeEventListener('click', deployProject);
+            rugBtn.removeEventListener('click', rugPull);
+            playAgainBtn.removeEventListener('click', resetGame);
+            howToPlayBtn.removeEventListener('click', showHowToPlay);
+            chartCanvas.removeEventListener('mousemove', handleChartHover);
+            
+            // Add new listeners
+            deployBtn.addEventListener('click', deployProject);
+            rugBtn.addEventListener('click', rugPull);
+            playAgainBtn.addEventListener('click', resetGame);
+            howToPlayBtn.addEventListener('click', showHowToPlay);
+            chartCanvas.addEventListener('mousemove', handleChartHover);
+            chartCanvas.addEventListener('mouseout', () => {
+                chartTooltip.style.display = 'none';
+            });
+        }
+        
+        // Show how to play instructions
+        function showHowToPlay() {
+            showNotification(`
+                <h3>How to Play Rug Pull Simulator</h3>
+                <p>1. Deploy a memecoin with the "DEPLOY COIN" button</p>
+                <p>2. Watch your coin grow in market cap and liquidity</p>
+                <p>3. "RUG PULL" at the right moment to steal investor funds</p>
+                <p>4. Avoid getting caught by keeping suspicion levels low</p>
+                <p>5. Use your stolen funds to deploy bigger scams</p>
+                <p>6. Get on the leaderboard with the biggest rug pulls!</p>
+            `, 10000);
+        }
+        
+        // Generate a random memecoin name
+        function generateCoinName() {
+            const prefixes = ["Moon", "Doge", "Shib", "Elon", "Pepe", "Baby", "Safe", "Rocket", "Space", "Inu", "Floki", "Bonk", "Wojak", "Chad", "Tendies", "Ape", "Diamond", "Lambo", "Pump", "Frog", "Cat", "Astro", "Cyber", "Crypto", "AI", "Hyper", "Mega", "Ultra", "Super", "Turbo"];
+            const suffixes = ["Coin", "Moon", "Rocket", "Inu", "Doge", "Token", "Cash", "Swap", "Floki", "Elon", "Finance", "Money", "Capital", "Labs", "AI", "Protocol", "DAO", "Chain", "Blocks", "Network", "Verse", "World", "Gains", "Flare", "Punk"];
+            
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            
+            return `${prefix}${suffix}`;
+        }
+        
+        // Generate a random token symbol
+        function generateSymbol(name) {
+            // Extract first letter of each word
+            const words = name.match(/[A-Z][a-z]+/g);
+            if (words && words.length > 1) {
+                return words.map(word => word[0]).join('');
+            }
+            
+            // If that doesn't work, take first 3-4 letters
+            return name.substring(0, 3 + Math.floor(Math.random() * 2)).toUpperCase();
+        }
+        
+        // Deploy a new project
+        function deployProject() {
+            if (gameState.wallet < gameState.deploymentCost) {
+                showNotification("Not enough SOL to deploy a new project!", 3000);
+                return;
+            }
+            
+            stopGameSimulation();
+            
+            // Generate project details
+            const name = generateCoinName();
+            const symbol = generateSymbol(name);
+            
+            gameState.wallet -= gameState.deploymentCost;
+            gameState.projectsDeployed++;
+            gameState.devTokenPercent = 30 + Math.floor(Math.random() * 40); // 30-70% dev tokens
+            gameState.chartData = [];
+            gameState.marketCap = 4000;
+            gameState.price = 0.0000001;
+            gameState.liquidity = gameState.deploymentCost * 0.8; // 80% of deployment cost goes to liquidity
+            gameState.holders = 1;
+            gameState.transactions = 0;
+            gameState.projectAge = 0;
+            gameState.socialEngagement = 5;
+            gameState.suspicionLevel = 0;
+            gameState.days = 0;
+            gameState.peakMarketCap = 0;
+            gameState.devTokens = (gameState.marketCap * gameState.devTokenPercent) / 100;
+            gameState.peakMarketCap = gameState.marketCap;
+            gameState.currentProject = { name, symbol };
+            gameState.gameActive = true;
+            
+            // Update UI
+            coinNameEl.textContent = name;
+            coinSymbolEl.textContent = symbol;
+            rugBtn.disabled = false;
+            deployBtn.disabled = true;
+            
+            // Clear event log
+            eventLogEl.innerHTML = '';
+            
+            // Start simulation
+            startGameSimulation();
+            
+            // Add log entry
+            addLogEntry(`Deployed new memecoin: ${name} (${symbol})`, 'info');
+            addLogEntry(`Initial market cap: $${gameState.marketCap.toLocaleString()}`, 'info');
+            addLogEntry(`Dev tokens: ${gameState.devTokenPercent}% of supply`, 'info');
+        }
+        
+        // Start game simulation
+        function startGameSimulation() {
+            gameState.gameTickInterval = setInterval(gameTick, 1000 / gameState.simulationSpeed);
+            gameState.chartInterval = setInterval(updateChart, 100);
+        }
+        
+        // Stop game simulation
+        function stopGameSimulation() {
+            if (gameState.gameTickInterval) {
+                clearInterval(gameState.gameTickInterval);
+                gameState.gameTickInterval = null;
+            }
+            
+            if (gameState.chartInterval) {
+                clearInterval(gameState.chartInterval);
+                gameState.chartInterval = null;
+            }
+        }
+        
+        // Game tick - main simulation loop
+        function gameTick() {
+            if (!gameState.gameActive) return;
+            
+            gameState.days++;
+            gameState.projectAge = Math.floor(gameState.days / 24); // 24 ticks = 1 day
+            
+            // Early stage growth
+            if (gameState.days < 48) {
+                simulateEarlyGrowth();
+            } 
+            // Mid stage with volatility
+            else if (gameState.days < 144) {
+                simulateMidStageGrowth();
+            } 
+            // Late stage with higher volatility
+            else {
+                simulateLateStageGrowth();
+            }
+            
+            // Update market metrics
+            updateMarketMetrics();
+            
+            // Update UI
+            updateUI();
+            
+            // Check for game over conditions
+            checkGameOver();
+        }
+        
+        // Simulate early growth phase
+        function simulateEarlyGrowth() {
+            // Rapid initial growth with occasional dips
+            const growthFactor = 1 + (Math.random() * 0.15); // 0-15% growth per tick
+            const dipChance = 0.1; // 10% chance of a dip
+            
+            if (Math.random() < dipChance) {
+                gameState.marketCap *= (1 - (Math.random() * 0.05)); // 0-5% dip
+            } else {
+                gameState.marketCap *= growthFactor;
+            }
+            
+            // Increase holders and transactions
+            if (Math.random() < 0.3) {
+                gameState.holders += Math.floor(Math.random() * 3) + 1;
+            }
+            
+            gameState.transactions += Math.floor(Math.random() * 5) + 1;
+            
+            // Slow growth in social engagement
+            gameState.socialEngagement += (Math.random() * 0.5);
+            gameState.socialEngagement = Math.min(gameState.socialEngagement, 100);
+            
+            // Very slow growth in suspicion
+            gameState.suspicionLevel += (Math.random() * 0.1);
+        }
+        
+        // Simulate mid-stage growth phase
+        function simulateMidStageGrowth() {
+            // More moderate growth with increased volatility
+            const growthChance = 0.65; // 65% chance of growth
+            const growthFactor = 1 + (Math.random() * 0.1); // 0-10% growth per tick
+            const dipFactor = 1 - (Math.random() * 0.08); // 0-8% dip
+            
+            if (Math.random() < growthChance) {
+                gameState.marketCap *= growthFactor;
+            } else {
+                gameState.marketCap *= dipFactor;
+            }
+            
+            // Increase holders and transactions
+            if (Math.random() < 0.4) {
+                gameState.holders += Math.floor(Math.random() * 8) + 2;
+            }
+            
+            gameState.transactions += Math.floor(Math.random() * 10) + 3;
+            
+            // Moderate growth in social engagement
+            gameState.socialEngagement += (Math.random() * 0.8);
+            gameState.socialEngagement = Math.min(gameState.socialEngagement, 100);
+            
+            // Moderate growth in suspicion
+            gameState.suspicionLevel += (Math.random() * 0.2);
+            
+            // Occasional news events
+            if (Math.random() < 0.05) {
+                triggerRandomEvent();
+            }
+        }
+        
+        // Simulate late-stage growth phase
+        function simulateLateStageGrowth() {
+            // Higher volatility, less growth overall
+            const growthChance = 0.55; // 55% chance of growth
+            const growthFactor = 1 + (Math.random() * 0.08); // 0-8% growth per tick
+            const dipFactor = 1 - (Math.random() * 0.12); // 0-12% dip
+            
+            if (Math.random() < growthChance) {
+                gameState.marketCap *= growthFactor;
+            } else {
+                gameState.marketCap *= dipFactor;
+            }
+            
+            // Increase holders and transactions
+            if (Math.random() < 0.5) {
+                gameState.holders += Math.floor(Math.random() * 15) + 5;
+            }
+            
+            gameState.transactions += Math.floor(Math.random() * 20) + 5;
+            
+            // Fast growth in social engagement
+            gameState.socialEngagement += (Math.random() * 1.2);
+            gameState.socialEngagement = Math.min(gameState.socialEngagement, 100);
+            
+            // Faster growth in suspicion
+            gameState.suspicionLevel += (Math.random() * 0.4);
+            
+            // More frequent news events
+            if (Math.random() < 0.08) {
+                triggerRandomEvent();
+            }
+        }
+        
+        // Trigger a random event
+        function triggerRandomEvent() {
+            const events = [
+                {
+                    name: "Twitter Mention",
+                    effect: () => {
+                        gameState.marketCap *= (1 + (Math.random() * 0.3));
+                        gameState.socialEngagement += 10;
+                        addLogEntry("A popular account mentioned your coin! Market cap increased and social engagement is up.", "success");
+                    }
+                },
+                {
+                    name: "Exchange Listing",
+                    effect: () => {
+                        gameState.marketCap *= (1 + (Math.random() * 0.5));
+                        gameState.holders += Math.floor(Math.random() * 50) + 20;
+                        gameState.suspicionLevel -= 5;
+                        addLogEntry("Your coin got listed on a small exchange! Market cap and holders increased.", "success");
+                    }
+                },
+                {
+                    name: "Whale Sell",
+                    effect: () => {
+                        gameState.marketCap *= (1 - (Math.random() * 0.25));
+                        addLogEntry("A whale just sold their tokens! Market cap decreased sharply.", "warning");
+                    }
+                },
+                {
+                    name: "FUD Article",
+                    effect: () => {
+                        gameState.marketCap *= (1 - (Math.random() * 0.15));
+                        gameState.suspicionLevel += 15;
+                        addLogEntry("Someone posted FUD about your project! Market cap dropped and suspicion increased.", "danger");
+                    }
+                },
+                {
+                    name: "Community Growth",
+                    effect: () => {
+                        gameState.socialEngagement += 15;
+                        gameState.holders += Math.floor(Math.random() * 30) + 10;
+                        addLogEntry("Your community is growing! Social engagement and holders increased.", "success");
+                    }
+                },
+                {
+                    name: "Developer Question",
+                    effect: () => {
+                        gameState.suspicionLevel += 10;
+                        addLogEntry("Someone is asking technical questions about your project! Suspicion increased.", "warning");
+                    }
+                }
+            ];
+            
+            const event = events[Math.floor(Math.random() * events.length)];
+            event.effect();
+        }
+        
+        // Update market metrics after each tick
+        function updateMarketMetrics() {
+            // Update peak market cap
+            if (gameState.marketCap > gameState.peakMarketCap) {
+                gameState.peakMarketCap = gameState.marketCap;
+            }
+            
+            // Update price
+            const totalSupply = 10000000000; // 10 billion tokens
+            gameState.price = gameState.marketCap / totalSupply;
+            
+            // Update liquidity as a percentage of market cap
+            gameState.liquidity = gameState.marketCap * 0.2 * (1 - (gameState.suspicionLevel / 200));
+            
+            // Update dev tokens value
+            gameState.devTokens = (gameState.marketCap * gameState.devTokenPercent) / 100;
+        }
+        
+        // Check for game over conditions
+        function checkGameOver() {
+            // Game over if suspicion level gets too high
+            if (gameState.suspicionLevel >= 100) {
+                addLogEntry("ALERT: Your scam has been detected! Authorities are closing in!", "danger");
+                showNotification("Your scam has been detected! Quick, rug pull now or face the consequences!", 5000);
+            }
+        }
+        
+        // Perform the rug pull action
+        function rugPull() {
+            stopGameSimulation();
+            
+            const stolenAmount = gameState.liquidity * 0.95; // 95% of liquidity can be stolen
+            gameState.wallet += stolenAmount;
+            gameState.totalRugs++;
+            gameState.gameActive = false;
+            
+            // Show game over screen
+            totalStolenEl.textContent = `${stolenAmount.toFixed(2)} SOL`;
+            projectLifetimeEl.textContent = `${gameState.projectAge} days`;
+            peakMarketCapEl.textContent = `${gameState.peakMarketCap.toLocaleString()} SOL`;
+            investorsRuggedEl.textContent = gameState.holders;
+            
+            gameOverEl.style.display = 'flex';
+            
+            // Add log entries
+            addLogEntry(`RUG PULL EXECUTED! Stole ${stolenAmount.toFixed(2)} SOL from investors!`, "danger");
+            addLogEntry(`Project lasted ${gameState.projectAge} days before being rugged.`, "info");
+            
+            // Add to leaderboard if significant
+            if (stolenAmount >= 1) {
+                addToLeaderboard({
+                    name: `Anon${Math.floor(Math.random() * 9999)}`,
+                    coinName: gameState.currentProject.name,
+                    stolenAmount: stolenAmount,
+                    projectAge: gameState.projectAge
+                });
+            }
+            
+            // Increase next deployment cost based on wallet
+            gameState.deploymentCost = Math.max(4, Math.min(Math.floor(gameState.wallet * 0.2), 100));
+            
+            // Update UI
+            rugBtn.disabled = true;
+            updateUI();
+        }
+        
+        // Reset game after rug pull
+        function resetGame() {
+            gameOverEl.style.display = 'none';
+            gameState.currentProject = null;
+            gameState.chartData = [];
+            
+            coinNameEl.textContent = "Deploy a new memecoin to start!";
+            coinSymbolEl.textContent = "-";
+            
+            deployBtn.disabled = false;
+            
+            drawChart();
+            updateUI();
+        }
+        
+        // Update the UI with current game state
+        function updateUI() {
+            walletBalanceEl.textContent = `${gameState.wallet.toFixed(2)} SOL`;
+            devTokensEl.textContent = `${gameState.devTokens.toFixed(2)} SOL`;
+            totalRugsEl.textContent = gameState.totalRugs;
+            projectsDeployedEl.textContent = gameState.projectsDeployed;
+            
+            if (gameState.gameActive) {
+                projectAgeEl.textContent = `${gameState.projectAge} days`;
+                holdersEl.textContent = gameState.holders;
+                transactionsEl.textContent = gameState.transactions;
+                potentialRugEl.textContent = `${(gameState.liquidity * 0.95).toFixed(2)} SOL`;
+                
+                coinPriceEl.textContent = `$${gameState.price.toFixed(8)}`;
+                marketCapEl.textContent = `$${gameState.marketCap.toLocaleString()}`;
+                liquidityEl.textContent = `${gameState.liquidity.toFixed(2)} SOL`;
+                
+                // Update progress bars
+                socialProgressBarEl.style.width = `${gameState.socialEngagement}%`;
+                socialPercentageEl.textContent = `${Math.floor(gameState.socialEngagement)}%`;
+                
+                suspicionProgressBarEl.style.width = `${gameState.suspicionLevel}%`;
+                suspicionPercentageEl.textContent = `${Math.floor(gameState.suspicionLevel)}%`;
+            } else {
+                projectAgeEl.textContent = '0 days';
+                holdersEl.textContent = '0';
+                transactionsEl.textContent = '0';
+                potentialRugEl.textContent = '0 SOL';
+                
+                coinPriceEl.textContent = '$0.0000';
+                marketCapEl.textContent = '$0';
+                liquidityEl.textContent = '0 SOL';
+                
+                socialProgressBarEl.style.width = '0%';
+                socialPercentageEl.textContent = '0%';
+                
+                suspicionProgressBarEl.style.width = '0%';
+                suspicionPercentageEl.textContent = '0%';
+            }
+            
+            // Update deployment button text
+            deployBtn.textContent = `DEPLOY COIN (${gameState.deploymentCost} SOL)`;
+            deployBtn.disabled = gameState.wallet < gameState.deploymentCost || gameState.gameActive;
+        }
+        
+        // Update chart with new data point
+        function updateChart() {
+            if (!gameState.gameActive) return;
+            
+            // Add new data point
+            const newPoint = {
+                day: gameState.days,
+                marketCap: gameState.marketCap,
+                price: gameState.price
+            };
+            
+            gameState.chartData.push(newPoint);
+            
+            // Limit data points to keep chart smooth
+            if (gameState.chartData.length > 100) {
+                gameState.chartData.shift();
+            }
+            
+            drawChart();
+        }
+        
+        // Draw the chart on canvas
+// Draw the chart on canvas
+        function drawChart() {
+            const ctx = chartCtx;
+            const width = chartCanvas.width;
+            const height = chartCanvas.height;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw background
+            ctx.fillStyle = '#111827';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Draw grid
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            
+            // Vertical grid lines
+            for (let i = 0; i < width; i += width / 10) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, height);
+                ctx.stroke();
+            }
+            
+            // Horizontal grid lines
+            for (let i = 0; i < height; i += height / 5) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(width, i);
+                ctx.stroke();
+            }
+            
+            // If no data, stop here
+            if (!gameState.chartData.length) return;
+            
+            // Find min and max values for scaling
+            const marketCaps = gameState.chartData.map(d => d.marketCap);
+            const minMarketCap = Math.min(...marketCaps);
+            const maxMarketCap = Math.max(...marketCaps);
+            const range = maxMarketCap - minMarketCap;
+            
+            // Avoid division by zero
+            const scaleFactor = range > 0 ? range : 1;
+            
+            // Draw chart line
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            gameState.chartData.forEach((point, i) => {
+                const x = (i / (gameState.chartData.length - 1 || 1)) * width;
+                const y = height - (((point.marketCap - minMarketCap) / scaleFactor) * height * 0.9);
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // Fill area under the line
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+            ctx.beginPath();
+            
+            gameState.chartData.forEach((point, i) => {
+                const x = (i / (gameState.chartData.length - 1 || 1)) * width;
+                const y = height - (((point.marketCap - minMarketCap) / scaleFactor) * height * 0.9);
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            // Complete the fill area
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw points
+            ctx.fillStyle = '#10b981';
+            
+            gameState.chartData.forEach((point, i) => {
+                // Only draw every 5th point for cleaner look
+                if (i % 5 !== 0 && i !== gameState.chartData.length - 1) return;
+                
+                const x = (i / (gameState.chartData.length - 1 || 1)) * width;
+                const y = height - (((point.marketCap - minMarketCap) / scaleFactor) * height * 0.9);
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw y-axis labels
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '12px Courier New, monospace';
+            ctx.textAlign = 'left';
+            
+            for (let i = 0; i <= 5; i++) {
+                const value = minMarketCap + (scaleFactor * (i / 5));
+                const label = '$' + value.toLocaleString(undefined, { 
+                    maximumFractionDigits: value < 1 ? 8 : 0,
+                    minimumFractionDigits: value < 1 ? 2 : 0
+                });
+                ctx.fillText(label, 5, height - (i * height / 5) - 5);
+            }
+            
+            // Draw x-axis labels
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 10; i++) {
+                if (gameState.chartData.length) {
+                    const index = Math.floor((i / 10) * (gameState.chartData.length - 1));
+                    const days = Math.floor(gameState.chartData[index].day / 24);
+                    const label = 'Day ' + days;
+                    ctx.fillText(label, (i * width / 10), height - 5);
+                }
+            }
+        }
+        
+        // Handle hover on chart
+        function handleChartHover(e) {
+            if (!gameState.chartData.length) return;
+            
+            const rect = chartCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = chartCanvas.width;
+            
+            // Find closest data point
+            const index = Math.floor((x / width) * (gameState.chartData.length - 1));
+            if (index >= 0 && index < gameState.chartData.length) {
+                const point = gameState.chartData[index];
+                
+                // Position tooltip
+                chartTooltip.style.left = `${e.clientX}px`;
+                chartTooltip.style.top = `${e.clientY - 70}px`;
+                chartTooltip.style.display = 'block';
+                
+                // Update tooltip content
+                chartTooltip.innerHTML = `
+                    Day: ${Math.floor(point.day / 24)}<br>
+                    MC: $${point.marketCap.toLocaleString()}<br>
+                    Price: $${point.price.toFixed(8)}
+                `;
+            }
+        }
+        
+        // Show a notification
+        function showNotification(message, duration = 3000) {
+            notificationEl.innerHTML = message;
+            notificationEl.style.display = 'block';
+            
+            setTimeout(() => {
+                notificationEl.style.display = 'none';
+            }, duration);
+        }
+        
+        // Add entry to event log
+        function addLogEntry(message, type = 'info') {
+            const now = new Date();
+            const timestamp = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+            
+            const logEntryEl = document.createElement('div');
+            logEntryEl.classList.add('log-entry', `log-${type}`);
+            logEntryEl.innerHTML = `<span class="log-time">[${timestamp}]</span> ${message}`;
+            
+            eventLogEl.appendChild(logEntryEl);
+            eventLogEl.scrollTop = eventLogEl.scrollHeight;
+            
+            // Limit log entries
+            while (eventLogEl.children.length > 50) {
+                eventLogEl.removeChild(eventLogEl.firstChild);
+            }
+        }
+        
+        // Leaderboard functions
+        function addToLeaderboard(entry) {
+            // Add to leaderboard
+            gameState.leaderboard.push(entry);
+            
+            // Sort by stolen amount
+            gameState.leaderboard.sort((a, b) => b.stolenAmount - a.stolenAmount);
+            
+            // Keep only top 10
+            if (gameState.leaderboard.length > 10) {
+                gameState.leaderboard = gameState.leaderboard.slice(0, 10);
+            }
+            
+            // Save to local storage
+            localStorage.setItem('rugPullLeaderboard', JSON.stringify(gameState.leaderboard));
+            
+            // Update leaderboard display
+            updateLeaderboardDisplay();
+        }
+        
+        function loadLeaderboard() {
+            const savedLeaderboard = localStorage.getItem('rugPullLeaderboard');
+            if (savedLeaderboard) {
+                gameState.leaderboard = JSON.parse(savedLeaderboard);
+            } else {
+                // Initialize with some fake entries
+                gameState.leaderboard = [
+                    { name: 'ShadyDev', coinName: 'MoonRocket', stolenAmount: 1250.32, projectAge: 14 },
+                    { name: 'ToxicCoder', coinName: 'SafeRug', stolenAmount: 895.76, projectAge: 7 },
+                    { name: 'AnonymousScammer', coinName: 'ElonDoge', stolenAmount: 745.19, projectAge: 10 },
+                    { name: 'RugLord420', coinName: 'BabyShiba', stolenAmount: 531.42, projectAge: 5 },
+                    { name: 'CryptoThief', coinName: 'DiamondHands', stolenAmount: 328.91, projectAge: 3 }
+                ];
+            }
+            
+            updateLeaderboardDisplay();
+        }
+        
+        function updateLeaderboardDisplay() {
+            leaderboardBody.innerHTML = '';
+            
+            gameState.leaderboard.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                
+                const rankClass = index < 3 ? `rank-${index + 1}` : '';
+                
+                row.innerHTML = `
+                    <td class="rank ${rankClass}">${index + 1}</td>
+                    <td>${entry.name}</td>
+                    <td>${entry.coinName}</td>
+                    <td>${entry.stolenAmount.toFixed(2)} SOL</td>
+                    <td>${entry.projectAge} days</td>
+                `;
+                
+                leaderboardBody.appendChild(row);
+            });
+        }
+        
+        // Initialize the game when page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>
