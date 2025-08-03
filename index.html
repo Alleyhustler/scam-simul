@@ -6,15 +6,32 @@
     <title>Rug Pull Simulator</title>
     <style>
         :root {
-            --bg-color: #0f1215;
-            --text-color: #e2e8f0;
-            --accent-color: #10b981;
-            --secondary-color: #8b5cf6;
-            --danger-color: #ef4444;
-            --success-color: #22c55e;
-            --panel-color: #1e293b;
+            /* New Color Scheme */
+            --bg-color: #ffffff;
+            --text-color: #170c08;
+            --accent-color: #eb8d03;
+            --secondary-color: #a3662c;
+            --danger-color: #d32f2f;
+            --success-color: #388e3c;
+            --panel-color: #f5f5f5;
+            --border-color: #e0e0e0;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            
+            /* Typography */
+            --font-size-sm: 0.875rem;
+            --font-size-md: 1rem;
+            --font-size-lg: 1.25rem;
+            --font-size-xl: 1.5rem;
+            --font-size-xxl: 2rem;
         }
         
+        /* Base Styles */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -34,170 +51,166 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: var(--spacing-md);
         }
         
+        /* Typography */
+        h1, h2, h3, h4 {
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+            color: var(--secondary-color);
+        }
+        
+        h1 { font-size: var(--font-size-xxl); }
+        h2 { font-size: var(--font-size-xl); }
+        h3 { font-size: var(--font-size-lg); }
+        h4 { font-size: var(--font-size-md); }
+        
+        /* Header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #2d3748;
+            padding: var(--spacing-md) 0;
+            margin-bottom: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
         }
         
         .logo {
-            font-size: 2rem;
+            font-size: var(--font-size-xl);
             font-weight: bold;
             color: var(--accent-color);
             display: flex;
             align-items: center;
+            gap: var(--spacing-sm);
         }
         
         .logo img {
-            margin-right: 10px;
+    width: 98px;
+    height: 98px;
+
             image-rendering: pixelated;
         }
         
+        /* Navigation */
         nav ul {
             display: flex;
             list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 2rem;
+            gap: var(--spacing-lg);
         }
         
         nav ul li a {
             color: var(--text-color);
             text-decoration: none;
             font-weight: bold;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 4px;
         }
         
         nav ul li a:hover {
             color: var(--accent-color);
+            background-color: rgba(235, 141, 3, 0.1);
         }
         
-        .game-container {
+        /* Main Game Layout */
+        .game-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
         }
         
-        .game-panel {
+        /* Panels */
+        .panel {
             background-color: var(--panel-color);
             border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: var(--spacing-md);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid var(--border-color);
         }
         
+        /* Chart Area */
         .chart-container {
             position: relative;
             height: 350px;
             width: 100%;
             overflow: hidden;
-            border: 1px solid #2d3748;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
-            background-color: #111827;
+            background-color: white;
+            margin-bottom: var(--spacing-md);
         }
         
         canvas {
             image-rendering: pixelated;
         }
         
-        .controls {
-            margin-top: 1rem;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            margin-right: 10px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: #fff;
-        }
-        
-        .btn-secondary {
-            background-color: var(--secondary-color);
-            color: #fff;
-        }
-        
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: #fff;
-        }
-        
-        .btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .stats-container {
-            background-color: var(--panel-color);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .stats-grid {
+        /* Coin Info */
+        .coin-info {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
         }
         
-        .stat-box {
-            background-color: #111827;
+        .coin-detail {
+            background-color: white;
+            padding: var(--spacing-sm);
             border-radius: 4px;
-            padding: 15px;
-            text-align: center;
+            font-size: var(--font-size-sm);
+            border: 1px solid var(--border-color);
         }
         
-        .stat-label {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            margin-bottom: 5px;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
+        .coin-detail span {
             font-weight: bold;
-            color: var(--text-color);
-        }
-        
-        .highlight {
-            color: var(--accent-color);
-        }
-        
-        .highlight-purple {
             color: var(--secondary-color);
         }
         
-        .highlight-danger {
-            color: var(--danger-color);
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
         }
         
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .stat-box {
+            background-color: white;
+            border-radius: 4px;
+            padding: var(--spacing-sm);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: #666;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-value {
+            font-size: var(--font-size-lg);
+            font-weight: bold;
+        }
+        
+        /* Progress Bars */
         .progress-container {
             width: 100%;
-            background-color: #111827;
+            background-color: white;
             border-radius: 4px;
             height: 20px;
-            margin-top: 10px;
+            margin: var(--spacing-sm) 0;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
         
         .progress-bar {
@@ -207,94 +220,142 @@
             transition: width 0.3s ease;
         }
         
-        .coin-info {
-            margin-top: 1rem;
-            padding: 15px;
-            background-color: #111827;
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
             border-radius: 4px;
-        }
-        
-        .coin-info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .coin-detail {
-            font-size: 0.9rem;
-        }
-        
-        .coin-detail span {
+            cursor: pointer;
             font-weight: bold;
-            color: var(--secondary-color);
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+            font-size: var(--font-size-md);
+            position: relative;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
         }
         
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Event Log */
+        .event-log {
+            height: 200px;
+            overflow-y: auto;
+            background-color: white;
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: var(--font-size-sm);
+            border: 1px solid var(--border-color);
+        }
+        
+        .log-entry {
+            margin-bottom: var(--spacing-xs);
+            padding: var(--spacing-xs);
+            border-radius: 2px;
+            border-left: 3px solid var(--accent-color);
+            background-color: var(--panel-color);
+        }
+        
+        .log-warning {
+            border-left-color: orange;
+        }
+        
+        .log-danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .log-success {
+            border-left-color: var(--success-color);
+        }
+        
+        .log-time {
+            color: #666;
+            margin-right: var(--spacing-sm);
+        }
+        
+        /* Leaderboard */
         .leaderboard {
-            margin-top: 2rem;
-        }
-        
-        .leaderboard h2 {
-            text-align: center;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
+            margin-top: var(--spacing-xl);
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: var(--panel-color);
+            background-color: white;
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
         
         th, td {
-            padding: 15px;
+            padding: var(--spacing-sm);
             text-align: left;
-            border-bottom: 1px solid #2d3748;
+            border-bottom: 1px solid var(--border-color);
         }
         
         th {
-            background-color: #111827;
-            color: var(--accent-color);
+            background-color: var(--panel-color);
+            color: var(--secondary-color);
         }
         
         tr:nth-child(even) {
-            background-color: #1a202c;
+            background-color: var(--panel-color);
         }
         
-        .rank {
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        .rank-1 {
-            color: gold;
-        }
-        
-        .rank-2 {
-            color: silver;
-        }
-        
-        .rank-3 {
-            color: #cd7f32;
-        }
-        
+        /* Notifications & Modals */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
             background-color: var(--accent-color);
             color: white;
-            padding: 15px 20px;
+            padding: var(--spacing-sm) var(--spacing-md);
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 1000;
             font-weight: bold;
+            max-width: 400px;
         }
         
-        .game-over {
+        .modal {
             display: none;
             position: fixed;
             top: 0;
@@ -307,270 +368,158 @@
             align-items: center;
         }
         
-        .game-over-content {
+        .modal-content {
             max-width: 600px;
-            background-color: var(--panel-color);
-            padding: 30px;
+            background-color: white;
+            padding: var(--spacing-lg);
             border-radius: 8px;
             text-align: center;
         }
         
-        .game-over h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--danger-color);
-        }
-        
-        .game-over p {
-            margin-bottom: 1.5rem;
-        }
-        
-        .game-over-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .game-over-stat {
-            background-color: #111827;
-            padding: 15px;
-            border-radius: 4px;
-        }
-        
-        .pixel-art {
-            image-rendering: pixelated;
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 15px;
-        }
-        
-        .tooltip {
-            position: absolute;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            display: none;
-            z-index: 100;
-            pointer-events: none;
-        }
-        
-        .event-log {
-            height: 200px;
-            overflow-y: auto;
-            background-color: #111827;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-        }
-        
-        .log-entry {
-            margin-bottom: 5px;
-            padding: 5px;
-            border-radius: 2px;
-        }
-        
-        .log-info {
-            border-left: 3px solid var(--accent-color);
-        }
-        
-        .log-warning {
-            border-left: 3px solid orange;
-        }
-        
-        .log-danger {
-            border-left: 3px solid var(--danger-color);
-        }
-        
-        .log-success {
-            border-left: 3px solid var(--success-color);
-        }
-        
-        .log-time {
-            color: #9ca3af;
-            font-size: 0.8rem;
-            margin-right: 5px;
-        }
-        
-        .pixel-button {
-            margin-top: 20px;
-            padding: 15px 30px;
-            border: none;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            background-color: var(--accent-color);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.1s;
-            box-shadow: 0 5px 0 #0e9f6e;
-            border-radius: 4px;
-        }
-        
-        .pixel-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 #0e9f6e;
-        }
-        
-        .pixel-button:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #0e9f6e;
-        }
-        
-        .pixel-button.danger {
-            background-color: var(--danger-color);
-            box-shadow: 0 5px 0 #b91c1c;
-        }
-        
-        .pixel-button.danger:hover {
-            box-shadow: 0 7px 0 #b91c1c;
-        }
-        
-        .pixel-button.danger:active {
-            box-shadow: 0 2px 0 #b91c1c;
-        }
-        
-        .pixel-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* Responsiveness */
-        @media (max-width: 768px) {
-            .game-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            nav ul li {
-                margin-left: 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            nav ul {
-                margin-top: 1rem;
-            }
-            
-            nav ul li {
-                margin-left: 0;
-                margin-right: 1rem;
-            }
-        }
+        /* Social Links */
         .social-links {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: var(--spacing-sm);
         }
         
-        .social-icon {
-            color: var(--text-color);
+        .social-btn {
+            color: white;
             text-decoration: none;
             font-weight: bold;
-            padding: 8px 12px;
+            padding: var(--spacing-xs) var(--spacing-sm);
             border-radius: 4px;
             transition: all 0.3s;
+            font-size: var(--font-size-sm);
         }
         
-        .social-icon.twitter {
+        .social-btn.twitter {
             background-color: #1DA1F2;
         }
         
-        .social-icon.telegram {
+        .social-btn.telegram {
             background-color: #0088CC;
         }
         
-        .buy-button {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .buy-button:hover {
+        .social-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        .ca-info {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            padding: 5px 10px;
-            background-color: var(--panel-color);
-            border-radius: 4px;
-            font-family: monospace;
+        /* Utility Classes */
+        .highlight { color: var(--accent-color); }
+        .highlight-secondary { color: var(--secondary-color); }
+        .highlight-danger { color: var(--danger-color); }
+        .text-center { text-align: center; }
+        .mb-sm { margin-bottom: var(--spacing-sm); }
+        .mb-md { margin-bottom: var(--spacing-md); }
+        .mb-lg { margin-bottom: var(--spacing-lg); }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (max-width: 768px) {
-            .social-links {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+            
+            nav ul {
+                margin-top: var(--spacing-md);
                 flex-wrap: wrap;
-                justify-content: center;
-                margin-top: 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .coin-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Notification System -->
     <div class="notification" id="notification"></div>
     
-    <div class="game-over" id="gameOver">
-        <div class="game-over-content">
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
             <div class="pixel-art" id="gameOverImage"></div>
-            <h2>RUG PULLED!</h2>
-            <p>You've successfully rugged the project and escaped with the funds!</p>
-            <div class="game-over-stats">
-                <div class="game-over-stat">
+            <h2 class="highlight-danger mb-md">RUG PULLED!</h2>
+            <p class="mb-lg">You've successfully rugged the project and escaped with the funds!</p>
+            
+            <div class="stats-grid mb-lg">
+                <div class="stat-box">
                     <div class="stat-label">Total Stolen</div>
                     <div class="stat-value highlight-danger" id="totalStolen">0 SOL</div>
                 </div>
-                <div class="game-over-stat">
+                <div class="stat-box">
                     <div class="stat-label">Project Lifetime</div>
                     <div class="stat-value" id="projectLifetime">0 days</div>
                 </div>
-                <div class="game-over-stat">
+                <div class="stat-box">
                     <div class="stat-label">Peak Market Cap</div>
-                    <div class="stat-value highlight-purple" id="peakMarketCap">0 SOL</div>
+                    <div class="stat-value highlight-secondary" id="peakMarketCap">0 SOL</div>
                 </div>
-                <div class="game-over-stat">
+                <div class="stat-box">
                     <div class="stat-label">Investors Rugged</div>
                     <div class="stat-value" id="investorsRugged">0</div>
                 </div>
             </div>
-            <button class="pixel-button" id="playAgainBtn">START NEW SCAM</button>
+            
+            <button class="btn btn-primary" id="playAgainBtn">START NEW SCAM</button>
+        </div>
+    </div>
+    
+    <!-- How to Play Modal -->
+    <div class="modal" id="howToPlayModal">
+        <div class="modal-content">
+            <h2 class="highlight mb-md">How to Play</h2>
+            <div class="text-left mb-lg">
+                <p class="mb-sm">1. <strong>Deploy a memecoin</strong> with the "DEPLOY COIN" button</p>
+                <p class="mb-sm">2. <strong>Watch your coin grow</strong> in market cap and liquidity</p>
+                <p class="mb-sm">3. <strong>Execute a rug pull</strong> at the right moment to steal investor funds</p>
+                <p class="mb-sm">4. <strong>Manage suspicion levels</strong> - too high and you'll get caught</p>
+                <p class="mb-sm">5. <strong>Use stolen funds</strong> to deploy bigger scams</p>
+                <p class="mb-sm">6. <strong>Climb the leaderboard</strong> with the biggest rug pulls!</p>
+            </div>
+            <button class="btn btn-primary" id="closeHowToPlayBtn">GOT IT</button>
         </div>
     </div>
     
     <div class="container">
         <header>
             <div class="logo">
-                <img src="f777f8073dd006f56ff5011039d38bdb__1_-removebg-preview-removebg-preview.png" alt="Scam Simulator Logo" width="64" height="64">
-                SCAM SIMULATOR
+                <img src="f777f8073dd006f56ff5011039d38bdb__1_-removebg-preview-removebg-preview.png" alt="Scam Simulator Logo">
+                The Mint Engine
             </div>
+            
             <div class="social-links">
-                <a href="https://x.com/_scamexperiment" target="_blank" class="social-icon twitter">Twitter</a>
-                <a href="https://t.me/scamexperiment" target="_blank" class="social-icon telegram">Telegram</a>
-                <a href="https://pump.fun/profile/NsAYEJZxzesvawzabvFa57wmjChXqXW3Pix7CKd2s6z" target="_blank" class="buy-button">BUY $SCAM</a>
-                <div class="ca-info">CA: HERE</div>
+                <a href="https://x.com/TheMintEngine" target="_blank" class="social-btn twitter">Twitter</a>
+                <a href="https://x.com/TheMintEngine" target="_blank" class="btn btn-secondary">BUY $MINT</a>
             </div>
+            
             <nav>
                 <ul>
                     <li><a href="#" class="highlight">Play</a></li>
@@ -580,108 +529,126 @@
             </nav>
         </header>
         
-        <div class="game-container">
-            <div class="game-panel">
-                <h2>Coin Chart</h2>
-                <div class="chart-container">
-                    <canvas id="chartCanvas"></canvas>
-                    <div class="tooltip" id="chartTooltip"></div>
-                </div>
-                <div class="coin-info">
+        <div class="game-layout">
+            <!-- Main Game Panel -->
+            <div class="main-game">
+                <div class="panel">
+                    <h2>Coin Chart</h2>
+                    <div class="chart-container">
+                        <canvas id="chartCanvas"></canvas>
+                        <div class="tooltip" id="chartTooltip"></div>
+                    </div>
+                    
                     <h3 id="coinName">Deploy a new memecoin to start!</h3>
-                    <div class="coin-info-grid">
+                    <div class="coin-info">
                         <div class="coin-detail">Symbol: <span id="coinSymbol">-</span></div>
                         <div class="coin-detail">Price: <span id="coinPrice">$0.0000</span></div>
                         <div class="coin-detail">Market Cap: <span id="marketCap">$0</span></div>
                         <div class="coin-detail">Liquidity: <span id="liquidity">0 SOL</span></div>
                     </div>
+                    
+                    <div class="controls">
+                        <button class="btn btn-primary" id="deployBtn">DEPLOY COIN</button>
+                        <button class="btn btn-danger" id="rugBtn" disabled>RUG PULL</button>
+                    </div>
                 </div>
-                <div class="controls">
-                    <button class="pixel-button" id="deployBtn">DEPLOY COIN</button>
-                    <button class="pixel-button danger" id="rugBtn" disabled>RUG PULL</button>
+                
+                <div class="panel">
+                    <h2>Event Log</h2>
+                    <div class="event-log" id="eventLog"></div>
                 </div>
-                <div class="event-log" id="eventLog"></div>
             </div>
             
-            <div class="stats-container">
-                <h2>Dev Stats</h2>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Wallet Balance</div>
-                        <div class="stat-value highlight" id="walletBalance">10 SOL</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Developer Tokens</div>
-                        <div class="stat-value highlight-purple" id="devTokens">0</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Total Rugs</div>
-                        <div class="stat-value highlight-danger" id="totalRugs">0</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Projects Deployed</div>
-                        <div class="stat-value" id="projectsDeployed">0</div>
-                    </div>
-                </div>
-                
-                <h3 style="margin-top: 20px;">Project Stats</h3>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Project Age</div>
-                        <div class="stat-value" id="projectAge">0 days</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Holders</div>
-                        <div class="stat-value" id="holders">0</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Transactions</div>
-                        <div class="stat-value" id="transactions">0</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Potential Rug</div>
-                        <div class="stat-value highlight-danger" id="potentialRug">0 SOL</div>
+            <!-- Stats Panel -->
+            <div class="stats-panel">
+                <div class="panel">
+                    <h2>Dev Stats</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Wallet Balance</div>
+                            <div class="stat-value highlight" id="walletBalance">10 SOL</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Developer Tokens</div>
+                            <div class="stat-value highlight-secondary" id="devTokens">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Total Rugs</div>
+                            <div class="stat-value highlight-danger" id="totalRugs">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Projects Deployed</div>
+                            <div class="stat-value" id="projectsDeployed">0</div>
+                        </div>
                     </div>
                 </div>
                 
-                <h3 style="margin-top: 20px;">Social Engagement</h3>
-                <div class="progress-container">
-                    <div class="progress-bar" id="socialProgressBar"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                    <span>0%</span>
-                    <span id="socialPercentage">0%</span>
-                    <span>100%</span>
+                <div class="panel">
+                    <h2>Project Stats</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Project Age</div>
+                            <div class="stat-value" id="projectAge">0 days</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Holders</div>
+                            <div class="stat-value" id="holders">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Transactions</div>
+                            <div class="stat-value" id="transactions">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Potential Rug</div>
+                            <div class="stat-value highlight-danger" id="potentialRug">0 SOL</div>
+                        </div>
+                    </div>
                 </div>
                 
-                <h3 style="margin-top: 20px;">Suspicion Level</h3>
-                <div class="progress-container">
-                    <div class="progress-bar" id="suspicionProgressBar" style="background-color: var(--danger-color);"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                    <span>Safe</span>
-                    <span id="suspicionPercentage">0%</span>
-                    <span>Detected</span>
+                <div class="panel">
+                    <h2>Project Metrics</h2>
+                    
+                    <h4>Social Engagement</h4>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="socialProgressBar"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>0%</span>
+                        <span id="socialPercentage">0%</span>
+                        <span>100%</span>
+                    </div>
+                    
+                    <h4>Suspicion Level</h4>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="suspicionProgressBar" style="background-color: var(--danger-color);"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>Safe</span>
+                        <span id="suspicionPercentage">0%</span>
+                        <span>Detected</span>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="leaderboard" id="leaderboard">
-            <h2>Top Ruggers Leaderboard</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Dev Name</th>
-                        <th>Coin Name</th>
-                        <th>Total Stolen</th>
-                        <th>Project Lifetime</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <!-- Leaderboard data will be inserted here -->
-                </tbody>
-            </table>
+            <h2 class="text-center highlight-secondary mb-md">Top Ruggers Leaderboard</h2>
+            <div class="panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Dev Name</th>
+                            <th>Coin Name</th>
+                            <th>Total Stolen</th>
+                            <th>Project Lifetime</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Leaderboard data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -705,7 +672,6 @@
             socialEngagement: 0,
             suspicionLevel: 0,
             devTokens: 0,
-            animationId: null,
             days: 0,
             peakMarketCap: 0,
             simulationSpeed: 1,
@@ -737,7 +703,7 @@
         const marketCapEl = document.getElementById('marketCap');
         const liquidityEl = document.getElementById('liquidity');
         const notificationEl = document.getElementById('notification');
-        const gameOverEl = document.getElementById('gameOver');
+        const gameOverModal = document.getElementById('gameOverModal');
         const totalStolenEl = document.getElementById('totalStolen');
         const projectLifetimeEl = document.getElementById('projectLifetime');
         const peakMarketCapEl = document.getElementById('peakMarketCap');
@@ -747,6 +713,8 @@
         const leaderboardBody = document.getElementById('leaderboardBody');
         const chartTooltip = document.getElementById('chartTooltip');
         const howToPlayBtn = document.getElementById('howToPlayBtn');
+        const howToPlayModal = document.getElementById('howToPlayModal');
+        const closeHowToPlayBtn = document.getElementById('closeHowToPlayBtn');
         const gameOverImage = document.getElementById('gameOverImage');
 
         // Initialize canvas sizes
@@ -764,62 +732,31 @@
             gameOverImage.src = gameOverCanvas.toDataURL();
         }
 
-        // Draw pixel art logo
-        function drawLogo(ctx) {
-            if (!ctx) return;
-            
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, 32, 32);
-            
-            // Draw money bag
-            ctx.fillStyle = '#eab308';
-            ctx.fillRect(8, 8, 16, 16);
-            ctx.fillStyle = '#ca8a04';
-            ctx.fillRect(10, 10, 12, 12);
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(14, 12, 4, 6);
-            
-            // Draw $ symbol
-            ctx.fillStyle = '#10b981';
-            ctx.fillRect(16, 10, 2, 10);
-            ctx.fillRect(14, 10, 6, 2);
-            ctx.fillRect(14, 14, 6, 2);
-            ctx.fillRect(14, 18, 6, 2);
-            
-            // Draw arrow for "pull"
-            ctx.fillStyle = '#ef4444';
-            ctx.fillRect(22, 14, 6, 2);
-            ctx.fillRect(24, 16, 2, 6);
-            ctx.fillRect(22, 20, 6, 2);
-            ctx.fillRect(20, 18, 2, 2);
-            ctx.fillRect(26, 18, 2, 2);
-        }
-
         // Draw game over image
         function drawGameOverImage(ctx) {
             if (!ctx) return;
             
             // Background
-            ctx.fillStyle = '#000';
+            ctx.fillStyle = '#170c08';
             ctx.fillRect(0, 0, 64, 64);
             
             // Draw money bag
-            ctx.fillStyle = '#eab308';
+            ctx.fillStyle = '#a3662c';
             ctx.fillRect(16, 16, 32, 32);
-            ctx.fillStyle = '#ca8a04';
+            ctx.fillStyle = '#eb8d03';
             ctx.fillRect(20, 20, 24, 24);
             
             // Draw dollar signs
-            ctx.fillStyle = '#10b981';
+            ctx.fillStyle = '#ffffff';
             ctx.fillRect(24, 24, 4, 4);
             ctx.fillRect(36, 24, 4, 4);
             ctx.fillRect(24, 32, 4, 4);
             ctx.fillRect(36, 32, 4, 4);
             
             // Draw running dev
-            ctx.fillStyle = '#8b5cf6';
+            ctx.fillStyle = '#a3662c';
             ctx.fillRect(44, 44, 8, 8);
-            ctx.fillStyle = '#6366f1';
+            ctx.fillStyle = '#eb8d03';
             ctx.fillRect(46, 46, 4, 4);
             ctx.fillRect(40, 48, 4, 8);
             ctx.fillRect(48, 48, 4, 8);
@@ -844,35 +781,20 @@
 
         // Set button event listeners
         function setButtonListeners() {
-            // Remove existing listeners to prevent duplicates
-            deployBtn.removeEventListener('click', deployProject);
-            rugBtn.removeEventListener('click', rugPull);
-            playAgainBtn.removeEventListener('click', resetGame);
-            howToPlayBtn.removeEventListener('click', showHowToPlay);
-            chartCanvas.removeEventListener('mousemove', handleChartHover);
-            
-            // Add new listeners
+            // Game buttons
             deployBtn.addEventListener('click', deployProject);
             rugBtn.addEventListener('click', rugPull);
             playAgainBtn.addEventListener('click', resetGame);
-            howToPlayBtn.addEventListener('click', showHowToPlay);
+            
+            // Modal buttons
+            howToPlayBtn.addEventListener('click', () => howToPlayModal.style.display = 'flex');
+            closeHowToPlayBtn.addEventListener('click', () => howToPlayModal.style.display = 'none');
+            
+            // Chart interaction
             chartCanvas.addEventListener('mousemove', handleChartHover);
             chartCanvas.addEventListener('mouseout', () => {
                 chartTooltip.style.display = 'none';
             });
-        }
-        
-        // Show how to play instructions
-        function showHowToPlay() {
-            showNotification(`
-                <h3>How to Play Rug Pull Simulator</h3>
-                <p>1. Deploy a memecoin with the "DEPLOY COIN" button</p>
-                <p>2. Watch your coin grow in market cap and liquidity</p>
-                <p>3. "RUG PULL" at the right moment to steal investor funds</p>
-                <p>4. Avoid getting caught by keeping suspicion levels low</p>
-                <p>5. Use your stolen funds to deploy bigger scams</p>
-                <p>6. Get on the leaderboard with the biggest rug pulls!</p>
-            `, 10000);
         }
         
         // Generate a random memecoin name
@@ -1188,7 +1110,7 @@
             peakMarketCapEl.textContent = `${gameState.peakMarketCap.toLocaleString()} SOL`;
             investorsRuggedEl.textContent = gameState.holders;
             
-            gameOverEl.style.display = 'flex';
+            gameOverModal.style.display = 'flex';
             
             // Add log entries
             addLogEntry(`RUG PULL EXECUTED! Stole ${stolenAmount.toFixed(2)} SOL from investors!`, "danger");
@@ -1214,7 +1136,7 @@
         
         // Reset game after rug pull
         function resetGame() {
-            gameOverEl.style.display = 'none';
+            gameOverModal.style.display = 'none';
             gameState.currentProject = null;
             gameState.chartData = [];
             
@@ -1294,7 +1216,6 @@
         }
         
         // Draw the chart on canvas
-// Draw the chart on canvas
         function drawChart() {
             const ctx = chartCtx;
             const width = chartCanvas.width;
@@ -1304,11 +1225,11 @@
             ctx.clearRect(0, 0, width, height);
             
             // Draw background
-            ctx.fillStyle = '#111827';
+            ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, width, height);
             
             // Draw grid
-            ctx.strokeStyle = '#1e293b';
+            ctx.strokeStyle = '#e0e0e0';
             ctx.lineWidth = 1;
             
             // Vertical grid lines
@@ -1340,7 +1261,7 @@
             const scaleFactor = range > 0 ? range : 1;
             
             // Draw chart line
-            ctx.strokeStyle = '#10b981';
+            ctx.strokeStyle = '#eb8d03';
             ctx.lineWidth = 3;
             ctx.beginPath();
             
@@ -1358,7 +1279,7 @@
             ctx.stroke();
             
             // Fill area under the line
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+            ctx.fillStyle = 'rgba(235, 141, 3, 0.2)';
             ctx.beginPath();
             
             gameState.chartData.forEach((point, i) => {
@@ -1379,7 +1300,7 @@
             ctx.fill();
             
             // Draw points
-            ctx.fillStyle = '#10b981';
+            ctx.fillStyle = '#eb8d03';
             
             gameState.chartData.forEach((point, i) => {
                 // Only draw every 5th point for cleaner look
@@ -1394,7 +1315,7 @@
             });
             
             // Draw y-axis labels
-            ctx.fillStyle = '#9ca3af';
+            ctx.fillStyle = '#666';
             ctx.font = '12px Courier New, monospace';
             ctx.textAlign = 'left';
             
@@ -1436,6 +1357,8 @@
                 chartTooltip.style.left = `${e.clientX}px`;
                 chartTooltip.style.top = `${e.clientY - 70}px`;
                 chartTooltip.style.display = 'block';
+                chartTooltip.style.backgroundColor = '#170c08';
+                chartTooltip.style.color = 'white';
                 
                 // Update tooltip content
                 chartTooltip.innerHTML = `
